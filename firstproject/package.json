@@ -1,0 +1,17 @@
+{
+  "name": "firstproject",
+  "version": "1.0.0",
+  "description": "My first NodeJs Project",
+  "main": "index.js",
+  "scripts": {
+    "start" : "nodemon index.js"
+  },
+  "author": "Tarun M",
+  "license": "ISC",
+  "dependencies": {
+    "slugify": "^1.6.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}

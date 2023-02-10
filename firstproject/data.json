@@ -1,0 +1,44 @@
+[
+    {
+        "id" : 0,
+        "filmname" : "American Pysco",
+        "actor" : "Patrik Bateman",
+        "dc" : false,
+        "desc" : ""
+    },
+    {
+        "id" : 1,
+        "filmname" : "The Batman Begins",
+        "actor" : "Bruce Wayne",
+        "dc" : true,
+        "desc" : ""
+    },
+    {
+        "id" : 2,
+        "filmname" : "Thor - Love and Thunder",
+        "actor" : "Gorr The God Butcher",
+        "dc" : false,
+        "desc" : ""
+    },
+    {
+        "id" : 3,
+        "filmname" : "The Dark Knight",
+        "actor" : "Bruce Wayne",
+        "dc" : true,
+        "desc" : ""
+    },
+    {
+        "id" : 4,
+        "filmname" : "The Dark Knight Rises",
+        "actor" : "Bruce Wayne",
+        "dc" : true,
+        "desc" : ""
+    },
+    {
+        "id" : 5,
+        "filmname" : "Ford v Ferrari",
+        "actor" : "Bruce Wayne",
+        "dc" : false,
+        "desc" : ""
+    }
+]
