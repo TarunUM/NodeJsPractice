@@ -19,7 +19,7 @@ const slugify = require('slugify');
 
 //Importing Film Html file
 const film = fs.readFileSync(`${__dirname}/film.html`,'utf-8');
-const filmCard = fs.readFileSync(`${__dirname}/filmCard.html`,'utf-8');
+const filmCard = fs.readFileSync(`${__dirname}/filmcard.html`,'utf-8');
 const home = fs.readFileSync(`${__dirname}/home.html`,'utf-8');
 
 // Importing JSON data file 
@@ -36,6 +36,7 @@ const server = http.createServer((req, res) => {
 
     // const pathName = req.url;
     if(pathname === '/' || pathname === '/home'){
+        console.log("Hello World");
         res.writeHead(200, { 'Content-type': 'text/html'});
         const cardsHtml = dataObj.map( ele => replacefilmcard(filmCard, ele)).join('');
         const output = home.replace('{%filmcards%}',cardsHtml)
@@ -52,6 +53,8 @@ const server = http.createServer((req, res) => {
     }
 })
 
-server.listen(3000, '127.0.0.1', () => {
-    console.log('Project Server is running---');
+const port = process.env.PORT || 8000
+
+server.listen(port, '127.0.0.1' ,() => {
+    console.log(`Project Server is running localhost:${port}...`);
 })
