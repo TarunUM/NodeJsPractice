@@ -1,14 +1,14 @@
-const express = require('express');
-const morgan = require('morgan');
-const tourRouter = require('./routes/tourRoutes');
-const userRoutes = require('./routes/userRoutes');
+const express = require("express");
+const morgan = require("morgan");
+const tourRouter = require("./routes/tourRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 const app = express();
 
 // MIddeleWares
 // The Order Matter for middleWares
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
 }
 
 app.use(express.json());
@@ -17,7 +17,7 @@ app.use(express.static(`${__dirname}/public`));
 
 //Custom middleWares
 app.use((req, res, next) => {
-  console.log('Hello from middleWare 👌');
+  console.log("Hello from middleWare 👌");
   next();
 });
 app.use((req, res, next) => {
@@ -26,8 +26,8 @@ app.use((req, res, next) => {
 });
 
 // Mounting Routers
-app.use('/api/v1/tours', tourRouter);
-app.use('/api/v1/users', userRoutes);
+app.use("/api/v1/tours", tourRouter);
+app.use("/api/v1/users", userRoutes);
 
 module.exports = app;
 

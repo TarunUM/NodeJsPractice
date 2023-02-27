@@ -1,1 +1,7 @@
 node_modueles
+Dockerfile
+.dockerignore
+npm-debug.log
+README.md
+.git
+yarn-error.log

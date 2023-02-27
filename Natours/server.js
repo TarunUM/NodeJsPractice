@@ -13,16 +13,34 @@ const DB = process.env.DATABASE.replace(
   '<PASSWORD>',
   process.env.DATABASE_PASSWORD
 );
+
 mongoose.set('strictQuery', true);
+
 mongoose
   .connect(DB, {
-    useNewUrlParser: true
+    useNewUrlParser: true,
   })
   .then(() => {
     // console.log(conn.connections);
     console.log('DB conn is successfull!');
   })
   .catch((error) => console.log(error));
+
+/* Testing Mongoose */
+// const testTour = new Tour({
+//   name: 'The Snow Leopard',
+//   price: 997,
+// });
+
+// testTour
+//   .save()
+//   .then((result) => {
+//     console.log(result);
+//   })
+//   .catch((err) => {
+//     // console.log(err);
+//     console.log(err.message + '💥');
+//   });
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
