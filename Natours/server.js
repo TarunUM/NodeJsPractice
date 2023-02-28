@@ -22,7 +22,7 @@ mongoose
   })
   .then(() => {
     // console.log(conn.connections);
-    console.log('DB conn is successfull!');
+    // console.log('DB conn is successfull!');
   })
   .catch((error) => console.log(error));
 
@@ -45,5 +45,5 @@ mongoose
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   // eslint-disable-next-line no-console
-  console.log(`App running on ${port}...`);
+  // console.log(`App running on ${port}...`);
 });
