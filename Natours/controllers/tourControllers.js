@@ -92,6 +92,7 @@ exports.updateTour = async (req, res) => {
       new: true,
       runValidators: true,
     });
+    // runValidators: it validates the updated tour as once we created the tour
 
     res.status(200).json({
       status: 'success',
@@ -153,6 +154,7 @@ exports.getTourStats = async (req, res) => {
 
     res.status(200).json({
       status: 'success',
+      results: stats.length,
       data: {
         stats,
       },
@@ -213,5 +215,10 @@ exports.getMonthlyPlan = async (req, res) => {
         plan,
       },
     });
-  } catch (err) {}
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
 };
