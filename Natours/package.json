@@ -12,9 +12,11 @@
   "author": "Tarun Mosalagi",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "global": "^4.4.0",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.10.0",
     "morgan": "^1.10.0",
     "slugify": "^1.6.5",
