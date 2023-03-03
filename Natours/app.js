@@ -7,6 +7,8 @@ const globalErrorHandler = require('./controllers/errorControllers');
 
 const app = express();
 
+console.log('Environment =', process.env.NODE_ENV);
+
 // MIddeleWares
 // The Order Matter for middleWares
 if (process.env.NODE_ENV === 'development') {

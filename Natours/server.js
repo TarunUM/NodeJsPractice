@@ -4,6 +4,13 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
 
+// uncaught exceptions is for synchronous error
+process.on('uncaughtException', (err) => {
+  console.log('Uncaught Exception 💥 shutting down');
+  console.log(err.name, err.message);
+  process.exit(1);
+});
+
 const app = require('./app');
 
 // for Local host
@@ -23,8 +30,11 @@ mongoose
   .then(() => {
     // console.log(conn.connections);
     console.log('DB conn is successfull!');
-  })
-  .catch((error) => console.log(error));
+  });
+// .catch((error) => {
+//   // console.log(error);
+//   console.log('DB conn error');
+// });
 
 /* Testing Mongoose */
 // const testTour = new Tour({
@@ -43,7 +53,14 @@ mongoose
 //   });
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  // eslint-disable-next-line no-console
-  // console.log(`App running on ${port}...`);
+const server = app.listen(port, () => {
+  console.log(`App running on ${port}...`);
+});
+
+process.on('unhandledRejection', (err) => {
+  console.log('Unhandled rejection 💥 shutting down');
+  console.log(err.name, err.message);
+  server.close(() => {
+    process.exit(1);
+  });
 });
