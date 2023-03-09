@@ -1,5 +1,11 @@
 const express = require('express');
 const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const xssClean = require('xss-clean');
+const hpp = require('hpp');
+
 const tourRouter = require('./routes/tourRoutes');
 const userRoutes = require('./routes/userRoutes');
 const AppError = require('./utils/appError');
@@ -10,13 +16,64 @@ const app = express();
 console.log('Environment =', process.env.NODE_ENV);
 
 // MIddeleWares
+// GLOBAL MIddeleWares
+
+// Set Security HTTP headers
+app.use(helmet());
+
 // The Order Matter for middleWares
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-app.use(express.json());
+// Limit Requests from sams API requests
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: 'Too many requests from this IP, please try again in an hour',
+});
+app.use('/api', limiter);
+
+// Body parse, reading data from body into req.body
+app.use(
+  express.json({
+    limit: '100kb',
+    extended: true,
+  })
+);
+
+// Data Sanitizaton against NoSql query injection /* "email":{ "$gt": ""} it works */
+app.use(mongoSanitize());
+// app.use(
+//   mongoSanitize({
+//     replaceWith: '_',
+//   })
+// );
+
+// Data Sanitizaton against XSS
+app.use(xssClean());
+
+// Prevent parameter pollution
+app.use(
+  hpp({
+    whitelist: [
+      'authorization',
+      'content-type',
+      'dnt',
+      'origin',
+      'duration',
+      'difficulty',
+      'price',
+      'maxGroupSize',
+      'ratingQuantity',
+      'ratingAverage',
+    ],
+  })
+);
+
 app.use(express.text());
+
+// Serving Static Files
 app.use(express.static(`${__dirname}/public`));
 
 // //Custom middleWares
@@ -24,6 +81,8 @@ app.use(express.static(`${__dirname}/public`));
 //   console.log("Hello from middleWare 👌");
 //   next();
 // });
+
+// Test MiddleWare
 app.use((req, res, next) => {
   // req.requestTime = new Date().toISOString();
   // console.log(req.headers);
