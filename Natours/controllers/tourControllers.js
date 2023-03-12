@@ -10,7 +10,7 @@ exports.aliasTopTours = (req, res, next) => {
   next();
 };
 
-exports.getAllTours = async (req, res) => {
+exports.getAllTours = catchAsync(async (req, res) => {
   // console.log(req.requestTime);
 
   // Execute the query
@@ -46,7 +46,7 @@ exports.getAllTours = async (req, res) => {
   //     message: err.message,
   //   });
   // }
-};
+});
 
 exports.getTour = catchAsync(async (req, res, next) => {
   // adding ? infront of params means optional

@@ -3,6 +3,9 @@ const mongoose = require('mongoose');
 const slugify = require('slugify');
 const validator = require('validator');
 
+// imported bcz of embedding data
+// const User = require('./userModel');
+
 const tourSchema = new mongoose.Schema(
   {
     name: {
@@ -102,6 +105,7 @@ const tourSchema = new mongoose.Schema(
         day: Number,
       },
     ],
+    guides: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
   },
   {
     toJSON: { virtuals: true },
@@ -113,12 +117,21 @@ tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
-// Documentat middleware: runs before or after the .save() command and .create(), .remove(), .validate() command
+// DOCUMENT MIDDLEWARE: runs before or after the .save() command and .create(), .remove(), .validate() command
 // 'save' is called as HOOK
 tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
 });
+
+// ----- Embedding Data in Tours Model using id's  -----
+// tourSchema.pre('save', async function (next) {
+//   const guidesPromises = await this.guides.map(
+//     async (id) => await User.findById(id)
+//   );
+//   this.guides = await Promise.all(guidesPromises);
+//   next();
+// });
 
 // tourSchema.pre('save', function (next) {
 //   console.log('Will save document');
@@ -136,6 +149,15 @@ tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
   // this.find({ secretTour: { $eq: true } });
   this.start = Date.now();
+  next();
+});
+
+// ----- Reference Data in Tours Model using id's  -----
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -pwChangedAt',
+  });
   next();
 });
 
