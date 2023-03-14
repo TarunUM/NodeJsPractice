@@ -2,6 +2,7 @@ const Tour = require('./../models/tourModels');
 const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
+const factory = require('./handlerFactory');
 
 exports.aliasTopTours = (req, res, next) => {
   req.query.limit = '5';
@@ -128,29 +129,31 @@ exports.updateTour = catchAsync(async (req, res) => {
   // }
 });
 
-exports.deleteTour = async (req, res) => {
-  const tour = await Tour.findByIdAndDelete(req.params.id);
+// exports.deleteTour = async (req, res) => {
+//   const tour = await Tour.findByIdAndDelete(req.params.id);
 
-  if (!tour) {
-    return next(new AppError('No tour found with id', 404));
-  }
+//   if (!tour) {
+//     return next(new AppError('No tour found with id', 404));
+//   }
 
-  res.status(204).json({
-    status: 'success',
-    message: 'Deleted tour is here',
-  });
+//   res.status(204).json({
+//     status: 'success',
+//     message: 'Deleted tour is here',
+//   });
 
-  // try {
+//   // try {
 
-  // } catch (err) {
-  //   res.status(400).json({
-  //     status: 'fail',
-  //     message: err.message,
-  //   });
-  // }
+//   // } catch (err) {
+//   //   res.status(400).json({
+//   //     status: 'fail',
+//   //     message: err.message,
+//   //   });
+//   // }
 
-  // responding text/json after 204 status doesn't send any data
-};
+//   // responding text/json after 204 status doesn't send any data
+// };
+
+exports.deleteTour = factory.deleteOne(Tour);
 
 exports.getTourStats = async (req, res) => {
   const stats = await Tour.aggregate([
