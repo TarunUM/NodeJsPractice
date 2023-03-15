@@ -1,7 +1,5 @@
 const Tour = require('./../models/tourModels');
-const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
-const AppError = require('./../utils/appError');
 const factory = require('./handlerFactory');
 
 exports.aliasTopTours = (req, res, next) => {
@@ -11,123 +9,123 @@ exports.aliasTopTours = (req, res, next) => {
   next();
 };
 
-exports.getAllTours = catchAsync(async (req, res) => {
-  // console.log(req.requestTime);
+// exports.getAllTours = catchAsync(async (req, res) => {
+//   // console.log(req.requestTime);
 
-  // Execute the query
-  const features = new APIFeatures(Tour.find(), req.query)
-    .filter()
-    .sort()
-    .limit()
-    .pagination();
+//   // Execute the query
+//   const features = new APIFeatures(Tour.find(), req.query)
+//     .filter()
+//     .sort()
+//     .limit()
+//     .pagination();
 
-  const tours = await features.query;
-  // query.sort().select().skip().limit()
+//   const tours = await features.query;
+//   // query.sort().select().skip().limit()
 
-  res.status(200).json({
-    status: 'success',
-    results: tours.length,
-    data: {
-      tours: tours,
-    },
-  });
+//   res.status(200).json({
+//     status: 'success',
+//     results: tours.length,
+//     data: {
+//       tours: tours,
+//     },
+//   });
 
-  // try {
-  //   // let query = Tour.find(JSON.parse(queryString));
+//   // try {
+//   //   // let query = Tour.find(JSON.parse(queryString));
 
-  //   // const query = await Tour.find()
-  //   //   .where('duration')
-  //   //   .equals(5)
-  //   //   .where('difficulty')
-  //   //   .equals('easy');
+//   //   // const query = await Tour.find()
+//   //   //   .where('duration')
+//   //   //   .equals(5)
+//   //   //   .where('difficulty')
+//   //   //   .equals('easy');
 
-  // } catch (err) {
-  //   res.status(404).json({
-  //     status: 'fail',
-  //     message: err.message,
-  //   });
-  // }
-});
+//   // } catch (err) {
+//   //   res.status(404).json({
+//   //     status: 'fail',
+//   //     message: err.message,
+//   //   });
+//   // }
+// });
 
-exports.getTour = catchAsync(async (req, res, next) => {
-  // adding ? infront of params means optional
-  const tour = await Tour.findById(req.params.id).populate({
-    path: 'reviews',
-  });
-  // Tour.findOne({ _id: req.params.id });
+// exports.getTour = catchAsync(async (req, res, next) => {
+//   // adding ? infront of params means optional
+//   const tour = await Tour.findById(req.params.id).populate({
+//     path: 'reviews',
+//   });
+//   // Tour.findOne({ _id: req.params.id });
 
-  if (!tour) {
-    return next(new AppError('No tour found with id', 404));
-  }
+//   if (!tour) {
+//     return next(new AppError('No tour found with id', 404));
+//   }
 
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour: tour,
-    },
-  });
+//   res.status(200).json({
+//     status: 'success',
+//     data: {
+//       tour: tour,
+//     },
+//   });
 
-  // try {
-  //   console.log(req.params);
+//   // try {
+//   //   console.log(req.params);
 
-  // } catch (err) {
-  //   res.status(404).json({
-  //     status: 'fail',
-  //     message: err.message,
-  //   });
-  // }
-});
+//   // } catch (err) {
+//   //   res.status(404).json({
+//   //     status: 'fail',
+//   //     message: err.message,
+//   //   });
+//   // }
+// });
 
-exports.createTour = catchAsync(async (req, res) => {
-  // const newTour = new Tour({});
-  // newTour.save();
-  const newTour = await Tour.create(req.body);
+// exports.createTour = catchAsync(async (req, res) => {
+//   // const newTour = new Tour({});
+//   // newTour.save();
+//   const newTour = await Tour.create(req.body);
 
-  res.status(201).json({
-    status: 'success',
-    data: {
-      tour: newTour,
-    },
-  });
+//   res.status(201).json({
+//     status: 'success',
+//     data: {
+//       tour: newTour,
+//     },
+//   });
 
-  // try {
+//   // try {
 
-  // } catch (err) {
-  //   res.status(400).json({
-  //     status: 'fail',
-  //     message: err.message,
-  //   });
-  // }
-});
+//   // } catch (err) {
+//   //   res.status(400).json({
+//   //     status: 'fail',
+//   //     message: err.message,
+//   //   });
+//   // }
+// });
 
-exports.updateTour = catchAsync(async (req, res) => {
-  const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-  // runValidators: it validates the updated tour as once we created the tour
+// exports.updateTour = catchAsync(async (req, res) => {
+//   const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+//     new: true,
+//     runValidators: true,
+//   });
+//   // runValidators: it validates the updated tour as once we created the tour
 
-  if (!tour) {
-    return next(new AppError('No tour found with id', 404));
-  }
+//   if (!tour) {
+//     return next(new AppError('No tour found with id', 404));
+//   }
 
-  res.status(200).json({
-    status: 'success',
-    message: 'Updated tour is here',
-    data: {
-      tour,
-    },
-  });
+//   res.status(200).json({
+//     status: 'success',
+//     message: 'Updated tour is here',
+//     data: {
+//       tour,
+//     },
+//   });
 
-  // try {
+//   // try {
 
-  // } catch (err) {
-  //   res.status(400).json({
-  //     status: 'fail',
-  //     message: err.message,
-  //   });
-  // }
-});
+//   // } catch (err) {
+//   //   res.status(400).json({
+//   //     status: 'fail',
+//   //     message: err.message,
+//   //   });
+//   // }
+// });
 
 // exports.deleteTour = async (req, res) => {
 //   const tour = await Tour.findByIdAndDelete(req.params.id);
@@ -154,6 +152,10 @@ exports.updateTour = catchAsync(async (req, res) => {
 // };
 
 exports.deleteTour = factory.deleteOne(Tour);
+exports.updateTour = factory.updateOne(Tour);
+exports.createTour = factory.createOne(Tour);
+exports.getTour = factory.getOne(Tour, { path: 'reviews' });
+exports.getAllTours = factory.getAll(Tour);
 
 exports.getTourStats = async (req, res) => {
   const stats = await Tour.aggregate([

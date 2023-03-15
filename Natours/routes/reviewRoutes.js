@@ -15,11 +15,14 @@ router
   .post(
     authController.protect,
     authController.restrictTo('user'),
+    reviewController.setTourAndUserId,
     reviewController.createReview
   );
 
-router.route('/:id').delete(reviewController.deleteReview);
-
-router.route('/:id').get(reviewController.getReview);
+router
+  .route('/:id')
+  .delete(reviewController.deleteReview)
+  .get(reviewController.getReview)
+  .patch(reviewController.updateReview);
 
 module.exports = router;
