@@ -35,13 +35,14 @@ const tourSchema = new mongoose.Schema(
         message: 'Difficulty must be easy, medium or difficult',
       },
     },
-    ratingAverage: {
+    ratingsAverage: {
       type: Number,
       default: 4.5,
       min: [1.0, 'A tour must have a ratingAverage'],
       max: [5.0, 'A tour must have a ratingAverage'],
+      set: (val) => Math.round(val * 10) / 10,
     },
-    ratingQuality: {
+    ratingsQuantity: {
       type: Number,
       default: 0,
     },
@@ -112,6 +113,11 @@ const tourSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
+
+// tourSchema.index({ price: 1 });
+tourSchema.index({ price: 1, ratingsAverage: -1 });
+tourSchema.index({ slug: 1 });
+tourSchema.index({ startLocation: '2dsphere' });
 
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
@@ -187,11 +193,12 @@ tourSchema.post(/^find/, function (docs, next) {
 });
 
 // Aggregate Middleware: runs before or after all find methods
-tourSchema.pre('aggregate', function (next) {
-  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-  console.log(this.pipeline());
-  next();
-});
+// this aggregate middleware is disabled because geoNear needs to be at top of pipeline stack
+// tourSchema.pre('aggregate', function (next) {
+//   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+//   console.log(this.pipeline());
+//   next();
+// });
 
 const Tour = mongoose.model('Tour', tourSchema);
 

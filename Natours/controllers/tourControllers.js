@@ -1,3 +1,4 @@
+const AppError = require('../utils/appError');
 const Tour = require('./../models/tourModels');
 const catchAsync = require('./../utils/catchAsync');
 const factory = require('./handlerFactory');
@@ -8,6 +9,187 @@ exports.aliasTopTours = (req, res, next) => {
   req.query.fields = 'name,price,ratingAverage,summary,difficulty';
   next();
 };
+
+exports.deleteTour = factory.deleteOne(Tour);
+exports.updateTour = factory.updateOne(Tour);
+exports.createTour = factory.createOne(Tour);
+exports.getTour = factory.getOne(Tour, { path: 'reviews' });
+exports.getAllTours = factory.getAll(Tour);
+
+exports.getTourStats = async (req, res) => {
+  const stats = await Tour.aggregate([
+    {
+      $match: { ratingsAverage: { $gte: 4 } },
+    },
+    {
+      $group: {
+        _id: { $toUpper: '$difficulty' },
+        numRatings: { $sum: '$ratingsQuantity' },
+        numTours: { $sum: 1 },
+        avgRating: { $avg: '$ratingsAverage' },
+        avgPrice: { $avg: '$price' },
+        minPrice: { $min: '$price' },
+        maxPrice: { $max: '$price' },
+      },
+    },
+    {
+      $sort: { avgPrice: 1 },
+    },
+    // {
+    //   $match: { _id: { $ne: 'EASY' } },
+    // },
+  ]);
+
+  res.status(200).json({
+    status: 'success',
+    results: stats.length,
+    data: {
+      stats,
+    },
+  });
+
+  // try {
+
+  // } catch (err) {
+  //   res.status(400).json({
+  //     status: 'fail',
+  //     message: err.message,
+  //   });
+  // }
+};
+
+exports.getMonthlyPlan = async (req, res) => {
+  const year = parseInt(req.params.year);
+  const plan = await Tour.aggregate([
+    {
+      $unwind: '$startDates',
+    },
+    {
+      $match: {
+        startDates: {
+          $gte: new Date(`${year}-01-01`),
+          $lte: new Date(`${year}-12-31`),
+        },
+      },
+    },
+    {
+      $group: {
+        _id: { $month: '$startDates' },
+        numTours: { $sum: 1 },
+        tours: { $push: '$name' },
+      },
+    },
+    {
+      $addFields: { month: '$_id' },
+    },
+    {
+      $project: {
+        _id: 0,
+        month: 1,
+        numTours: 1,
+        tours: 1,
+      },
+    },
+    {
+      $sort: { numTours: -1 },
+    },
+    {
+      $limit: 12,
+    },
+  ]);
+
+  res.status(200).json({
+    status: 'success',
+    results: plan.length,
+    data: {
+      plan,
+    },
+  });
+
+  // try {
+
+  // } catch (err) {
+  //   res.status(400).json({
+  //     status: 'fail',
+  //     message: err.message,
+  //   });
+  // }
+};
+
+// /tours-within/?distance=233&latlng=36.169717,-115.138706&unit=km
+// /tours-within/233/latlng/36.169717,-115.138706/unit/km
+exports.getToursWithin = catchAsync(async (req, res, next) => {
+  const { distance, latlng, unit } = req.params;
+  const [lat, lng] = latlng.split(',');
+
+  const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
+
+  if (!lat || !lng)
+    return next(
+      new AppError(
+        'Please Provide Latitude and longitude in the format lat,lng.',
+        400
+      )
+    );
+
+  const tours = await Tour.find({
+    startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
+  });
+
+  console.log(distance, lat, lng, unit);
+
+  res.status(200).json({
+    status: 'OK',
+    result: tours.length,
+    data: {
+      data: tours,
+    },
+  });
+});
+
+exports.getDistances = catchAsync(async (req, res, next) => {
+  const { latlng, unit } = req.params;
+  const [lat, lng] = latlng.split(',');
+
+  const Multiplier = unit === 'mi' ? 0.000621371 : 0.001;
+
+  if (!lat || !lng)
+    return next(
+      new AppError(
+        'Please Provide Latitude and longitude in the format lat,lng.',
+        400
+      )
+    );
+
+  const distances = await Tour.aggregate([
+    {
+      $geoNear: {
+        near: {
+          type: 'Point',
+          coordinates: [+lng, +lat],
+        },
+        distanceField: 'distance',
+        distanceMultiplier: Multiplier,
+      },
+    },
+    {
+      $project: {
+        distance: 1,
+        name: 1,
+      },
+    },
+  ]);
+
+  res.status(200).json({
+    status: 'OK',
+    result: distances.length,
+    data: {
+      data: distances,
+    },
+  });
+});
+
+/*  Factory Function eliminated all these functions into a single function  */
 
 // exports.getAllTours = catchAsync(async (req, res) => {
 //   // console.log(req.requestTime);
@@ -150,109 +332,3 @@ exports.aliasTopTours = (req, res, next) => {
 
 //   // responding text/json after 204 status doesn't send any data
 // };
-
-exports.deleteTour = factory.deleteOne(Tour);
-exports.updateTour = factory.updateOne(Tour);
-exports.createTour = factory.createOne(Tour);
-exports.getTour = factory.getOne(Tour, { path: 'reviews' });
-exports.getAllTours = factory.getAll(Tour);
-
-exports.getTourStats = async (req, res) => {
-  const stats = await Tour.aggregate([
-    {
-      $match: { ratingAverage: { $gte: 4.5 } },
-    },
-    {
-      $group: {
-        _id: { $toUpper: '$difficulty' },
-        numRatings: { $sum: '$ratingQuantity' },
-        numTours: { $sum: 1 },
-        avgRating: { $avg: '$ratingAverage' },
-        avgPrice: { $avg: '$price' },
-        minPrice: { $min: '$price' },
-        maxPrice: { $max: '$price' },
-      },
-    },
-    {
-      $sort: { avgPrice: 1 },
-    },
-    // {
-    //   $match: { _id: { $ne: 'EASY' } },
-    // },
-  ]);
-
-  res.status(200).json({
-    status: 'success',
-    results: stats.length,
-    data: {
-      stats,
-    },
-  });
-
-  // try {
-
-  // } catch (err) {
-  //   res.status(400).json({
-  //     status: 'fail',
-  //     message: err.message,
-  //   });
-  // }
-};
-
-exports.getMonthlyPlan = async (req, res) => {
-  const year = parseInt(req.params.year);
-  const plan = await Tour.aggregate([
-    {
-      $unwind: '$startDates',
-    },
-    {
-      $match: {
-        startDates: {
-          $gte: new Date(`${year}-01-01`),
-          $lte: new Date(`${year}-12-31`),
-        },
-      },
-    },
-    {
-      $group: {
-        _id: { $month: '$startDates' },
-        numTours: { $sum: 1 },
-        tours: { $push: '$name' },
-      },
-    },
-    {
-      $addFields: { month: '$_id' },
-    },
-    {
-      $project: {
-        _id: 0,
-        month: 1,
-        numTours: 1,
-        tours: 1,
-      },
-    },
-    {
-      $sort: { numTours: -1 },
-    },
-    {
-      $limit: 12,
-    },
-  ]);
-
-  res.status(200).json({
-    status: 'success',
-    results: plan.length,
-    data: {
-      plan,
-    },
-  });
-
-  // try {
-
-  // } catch (err) {
-  //   res.status(400).json({
-  //     status: 'fail',
-  //     message: err.message,
-  //   });
-  // }
-};
