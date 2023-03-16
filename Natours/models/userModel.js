@@ -62,7 +62,6 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre('save', async function (next) {
   //Only runs if the password is modified
-  console.log('hello1');
   if (!this.isModified('password')) {
     return next();
   }
@@ -76,7 +75,6 @@ userSchema.pre('save', async function (next) {
 
 userSchema.pre('save', async function (next) {
   //Only runs if the password is modified
-  console.log('hello2');
   if (!this.isModified('password') || this.isNew) {
     return next();
   }

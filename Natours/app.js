@@ -8,6 +8,7 @@ const hpp = require('hpp');
 
 const tourRouter = require('./routes/tourRoutes');
 const userRoutes = require('./routes/userRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorControllers');
 
@@ -92,6 +93,7 @@ app.use((req, res, next) => {
 // Mounting Routers
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/reviews', reviewRoutes);
 app.use('*', (req, res, next) => {
   // res.status(404).json({
   //   status: 'fail',
