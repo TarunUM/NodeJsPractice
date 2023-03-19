@@ -29,6 +29,10 @@ const upload = multer({ storage: storage });
 
 app.set("view engine", "ejs");
 
+app.get("/", (req, res) => {
+  res.render("index");
+});
+
 app.get("/upload", (req, res) => {
   res.render("upload");
 });
