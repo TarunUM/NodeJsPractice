@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
@@ -14,10 +15,17 @@ const globalErrorHandler = require('./controllers/errorControllers');
 
 const app = express();
 
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+
 console.log('Environment =', process.env.NODE_ENV);
 
 // MIddeleWares
 // GLOBAL MIddeleWares
+
+// Serving Static Files
+// app.use(express.static(`${__dirname}/public`));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Set Security HTTP headers
 app.use(helmet());
@@ -74,9 +82,6 @@ app.use(
 
 app.use(express.text());
 
-// Serving Static Files
-app.use(express.static(`${__dirname}/public`));
-
 // //Custom middleWares
 // app.use((req, res, next) => {
 //   console.log("Hello from middleWare 👌");
@@ -91,6 +96,25 @@ app.use((req, res, next) => {
 });
 
 // Mounting Routers
+app.get('/', (req, res) => {
+  res.status(200).render('base', {
+    tour: 'The Forest Hiker',
+    user: 'Tarun',
+  });
+});
+
+app.get('/overview', (req, res) => {
+  res.status(200).render('overview', {
+    title: 'All Tours',
+  });
+});
+
+app.get('/tour', (req, res) => {
+  res.status(200).render('tour', {
+    title: 'The Forest Hiker Tour',
+  });
+});
+
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/reviews', reviewRoutes);
