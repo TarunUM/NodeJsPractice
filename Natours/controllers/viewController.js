@@ -16,7 +16,16 @@ exports.getOverview = catchAsync(async (req, res) => {
 });
 
 exports.getTour = catchAsync(async (req, res) => {
+  const tour = await Tour.findOne({ slug: req.params.slug }).populate({
+    path: 'reviews',
+    fields: 'revies rating user',
+  });
+  // 1) get Tour data, for the requested tour (including and guides)
+
+  // 2)
+
   res.status(200).render('tour', {
-    title: 'The Forest Hiker Tour',
+    title: `${tour.name} Tour`,
+    tour,
   });
 });
