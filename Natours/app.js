@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xssClean = require('xss-clean');
 const hpp = require('hpp');
+const cookieParser = require('cookie-parser');
 
 const tourRouter = require('./routes/tourRoutes');
 const userRoutes = require('./routes/userRoutes');
@@ -29,7 +30,11 @@ console.log('Environment =', process.env.NODE_ENV);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Set Security HTTP headers
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  })
+);
 
 // The Order Matter for middleWares
 if (process.env.NODE_ENV === 'development') {
@@ -51,6 +56,7 @@ app.use(
     extended: true,
   })
 );
+app.use(cookieParser());
 
 // Data Sanitizaton against NoSql query injection /* "email":{ "$gt": ""} it works */
 app.use(mongoSanitize());
@@ -92,7 +98,7 @@ app.use(express.text());
 // Test MiddleWare
 app.use((req, res, next) => {
   // req.requestTime = new Date().toISOString();
-  // console.log(req.headers);
+  console.log(req.cookies);
   next();
 });
 
