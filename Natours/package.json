@@ -7,11 +7,15 @@
     "start": "nodemon server.js",
     "start:prod": "NODE_ENV=production nodemon server.js",
     "debug": "ndb server.js",
-    "debug:prod": "NODE_ENV=production ndb server.js"
+    "debug:prod": "NODE_ENV=production ndb server.js",
+    "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
+    "build:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js"
   },
   "author": "Tarun Mosalagi",
   "license": "ISC",
   "dependencies": {
+    "@babel/polyfill": "^7.12.1",
+    "axios": "^1.3.4",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.3",
@@ -32,6 +36,7 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.20",
+    "parcel-bundler": "^1.12.5",
     "prettier": "^2.8.4"
   },
   "engines": {

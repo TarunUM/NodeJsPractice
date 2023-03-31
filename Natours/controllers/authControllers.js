@@ -111,6 +111,32 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
+// It is for only render Templates (pug), no errors
+exports.isLoggedin = catchAsync(async (req, res, next) => {
+  if (req.cookies.jwt) {
+    // 1) Verify token
+    const decoded = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET);
+
+    // 2) Check if user still exists
+    const currentUser = await User.findById(decoded.id);
+    if (!currentUser) {
+      return next();
+    }
+
+    // 3) Check if user changed password after the token has issued
+    const checkPassChanged = await currentUser.changePasswordAfter(decoded.iat);
+    if (checkPassChanged) {
+      return next();
+    }
+
+    // Theres is a logged in USER
+    res.locals.user = currentUser;
+    return next();
+  }
+
+  next();
+});
+
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
     // roles is an array of strings

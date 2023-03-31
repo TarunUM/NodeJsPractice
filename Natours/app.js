@@ -33,6 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(
   helmet({
     contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
   })
 );
 
@@ -56,6 +57,7 @@ app.use(
     extended: true,
   })
 );
+/* Parsing the cookie header and populating req.cookies with an object keyed by the cookie names. */
 app.use(cookieParser());
 
 // Data Sanitizaton against NoSql query injection /* "email":{ "$gt": ""} it works */
@@ -87,6 +89,7 @@ app.use(
   })
 );
 
+/* A middleware that parses the body of the request and sets it to req.body. */
 app.use(express.text());
 
 // //Custom middleWares
@@ -107,6 +110,8 @@ app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/reviews', reviewRoutes);
+
+/* A middleware that is used to handle all the routes that are not defined in the app. */
 app.use('*', (req, res, next) => {
   // res.status(404).json({
   //   status: 'fail',

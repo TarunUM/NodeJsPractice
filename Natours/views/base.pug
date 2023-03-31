@@ -5,7 +5,6 @@ html
             meta(charset="UTF-8")
             meta(http-equiv="X-UA-Compatible", content="IE=edge")
             meta(name="viewport", content="width=device-width, initial-scale=1.0")
-            //- meta(http-equiv='Content-Security-Policy' content="script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com/ ; script-src-elem 'self' 'unsafe-inline'")
             title Natours | #{title}
             link(rel='stylesheet', href='/css/style.css')
             link(rel='shortcut icon' type='image/png' href='/img/favicon.png')
@@ -23,6 +22,7 @@ html
         // Footer
         include _footer
 
-        script(src='https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js')
-        script(src='/js/googleMaps.js')
-        script(src='/js/login.js')
+        //- script(src='https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js')
+        //- script(src='/js/microsoftMaps.js')
+        //- script(src='/js/login.js')
+        script(src='/js/bundle.js')
