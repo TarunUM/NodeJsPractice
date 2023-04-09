@@ -1,8 +1,9 @@
 import '@babel/polyfill';
-import { login } from './login';
+import { login, logout } from './login';
 
 // DOM ELEMENTS
 const loginForm = document.querySelector('.form');
+const logoutclass = document.querySelector('.nav__el--logout');
 
 // VALUES
 
@@ -16,3 +17,5 @@ if (loginForm) {
     login(email, password);
   });
 }
+
+if (logoutclass) logoutclass.addEventListener('click', logout);

@@ -75,6 +75,14 @@ exports.login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
+exports.logout = catchAsync(async (req, res) => {
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 5 * 1000),
+    httpOnly: true,
+  });
+  res.status(200).json({ status: 'success' });
+});
+
 exports.protect = catchAsync(async (req, res, next) => {
   let token;
   // 1) Get token from header and Checking if token exists
@@ -112,30 +120,36 @@ exports.protect = catchAsync(async (req, res, next) => {
 });
 
 // It is for only render Templates (pug), no errors
-exports.isLoggedin = catchAsync(async (req, res, next) => {
+exports.isLoggedin = async (req, res, next) => {
   if (req.cookies.jwt) {
-    // 1) Verify token
-    const decoded = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET);
+    try {
+      // 1) Verify token
+      const decoded = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET);
 
-    // 2) Check if user still exists
-    const currentUser = await User.findById(decoded.id);
-    if (!currentUser) {
+      // 2) Check if user still exists
+      const currentUser = await User.findById(decoded.id);
+      if (!currentUser) {
+        return next();
+      }
+
+      // 3) Check if user changed password after the token has issued
+      const checkPassChanged = await currentUser.changePasswordAfter(
+        decoded.iat
+      );
+      if (checkPassChanged) {
+        return next();
+      }
+
+      // Theres is a logged in USER
+      res.locals.user = currentUser;
+      return next();
+    } catch (err) {
       return next();
     }
-
-    // 3) Check if user changed password after the token has issued
-    const checkPassChanged = await currentUser.changePasswordAfter(decoded.iat);
-    if (checkPassChanged) {
-      return next();
-    }
-
-    // Theres is a logged in USER
-    res.locals.user = currentUser;
-    return next();
   }
 
   next();
-});
+};
 
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
