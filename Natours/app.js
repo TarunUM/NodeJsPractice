@@ -57,6 +57,7 @@ app.use(
     extended: true,
   })
 );
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 /* Parsing the cookie header and populating req.cookies with an object keyed by the cookie names. */
 app.use(cookieParser());
 
