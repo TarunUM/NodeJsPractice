@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
   },
   photo: {
     type: String,
-    default: `${__dirname}/../dev-data/img/monica.jpg`,
+    default: `default.jpg`,
     trim: true,
   },
   passwordConfirmation: {
@@ -101,7 +101,7 @@ userSchema.methods.changePasswordAfter = async function (JWTTimeStamp) {
   if (this.pwChangedAt) {
     const changedTimeStamp = parseInt(this.pwChangedAt.getTime() / 1000, 10);
 
-    console.log(changedTimeStamp, JWTTimeStamp);
+    // console.log(changedTimeStamp, JWTTimeStamp);
 
     return JWTTimeStamp < changedTimeStamp;
   }
@@ -119,7 +119,7 @@ userSchema.methods.createPasswordResetToken = function () {
     .update(resetToken)
     .digest('hex');
 
-  console.log({ resetToken }, this.passwordResetToken);
+  // console.log({ resetToken }, this.passwordResetToken);
 
   // Set the expiration date in milliseconds
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;

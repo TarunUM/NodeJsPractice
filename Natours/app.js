@@ -102,7 +102,7 @@ app.use(express.text());
 // Test MiddleWare
 app.use((req, res, next) => {
   // req.requestTime = new Date().toISOString();
-  console.log(req.cookies);
+  // console.log(req.cookies);
   next();
 });
 

@@ -1,6 +1,7 @@
 const express = require('express');
 const userController = require('../controllers/userControllers');
 const authController = require('../controllers/authControllers');
+
 const router = express.Router();
 
 router.post('/signup', authController.signup);
@@ -14,9 +15,15 @@ router.patch('/resetpassword/:token', authController.resetPassword);
 router.use(authController.protect);
 
 router.patch('/updatepassword', authController.updatePassword);
-router.patch('/updateMe', userController.updateMe);
-router.delete('/deleteMe', userController.deleteMe);
 router.get('/me', userController.getMe, userController.getUser);
+
+router.patch(
+  '/updateMe',
+  userController.uploadUserPhoto,
+  userController.resizeUserPhoto,
+  userController.updateMe
+);
+router.delete('/deleteMe', userController.deleteMe);
 
 // MiddleWare to restrict routes
 router.use(authController.restrictTo('admin', 'manager'));
