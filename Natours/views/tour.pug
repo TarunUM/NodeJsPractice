@@ -4,7 +4,6 @@ include _reviewCard
 block append head 
     script(src='http://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AkJHgQXycn-JpKbK_LaqSN-86hir2btx7BrhwFKfJj70ZWyBrpqKAAnjuZEgynaJ' async defer)
 
-
 mixin overviewBox(label, text, icon)
     .overview-box__detail
         svg.overview-box__icon
@@ -88,6 +87,9 @@ block content
             .cta__content
                 h2.heading-secondary What are you waiting for?
                 p.cta__text 10 days. 1 adventure. Infinite memories. Make it yours today!
-                button.btn.btn--green.span-all-rows Book tour now!
+                if user
+                    button.btn.btn--green.span-all-rows#book-tour(data-tour-id=`${tour.id}`) Book tour now!
+                else 
+                    a.btn.btn--green.span-all-rows(href='/login') log in to book tour
 
     script(type='text/javascript' src='/js/microsoftMaps.js')
