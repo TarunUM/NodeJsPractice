@@ -35,7 +35,7 @@ function GetMap() {
       draggable: false,
     });
     map.entities.push(pin);
-    console.log(locss);
+    // console.log(locss);
     /* Creating a new infobox object for each location. */
     var infobox = new Microsoft.Maps.Infobox(loc, {
       title: locss.description,

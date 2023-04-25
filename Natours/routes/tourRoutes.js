@@ -7,7 +7,7 @@ const reviewRouter = require('./../routes/reviewRoutes');
 const router = express.Router();
 
 router.param('id', (req, res, next, val) => {
-  console.log(`tour id is ${val}`);
+  // console.log(`tour id is ${val}`);
   next();
 });
 

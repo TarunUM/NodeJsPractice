@@ -188,7 +188,7 @@ tourSchema.pre(/^find/, function (next) {
 // post: it runs after execution of the query
 tourSchema.post(/^find/, function (docs, next) {
   // console.log(docs);
-  console.log(`Query took this time ${Date.now() - this.start} milliseconds`);
+  // console.log(`Query took this time ${Date.now() - this.start} milliseconds`);
   next();
 });
 
