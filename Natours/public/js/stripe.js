@@ -9,9 +9,7 @@ const stripe = loadStripe(
 export const bookTour = async (tourId) => {
   try {
     // 1) Get Chckout Session From application
-    const session = await axios(
-      `http://127.0.0.1:3000/api/v1/booking/checkout-session/${tourId}`
-    );
+    const session = await axios(`/api/v1/booking/checkout-session/${tourId}`);
 
     // console.log(session.data.session.url);
 
